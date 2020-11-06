@@ -130,7 +130,7 @@ parser MyParser(packet_in packet,
 ************   C H E C K S U M    V E R I F I C A T I O N   *************
 *************************************************************************/
 
-control MyVerifyChecksum(in headers hdr, inout metadata meta) {   
+control MyVerifyChecksum(inout headers hdr, inout metadata meta) {
     apply {  }
 }
 
@@ -146,22 +146,22 @@ control MyIngress(inout headers hdr,
     /* At destination ToR, saves the queue depth of the best path from
      * each source ToR
      */
-    register<qdepth_t>(TOR_NUM) srcindex_qdepth_reg; 
+    register<qdepth_t>(TOR_NUM) srcindex_qdepth_reg;
 
     /* At destination ToR, saves the digest of the best path from
      * each source ToR
      */
-    register<digest_t>(TOR_NUM) srcindex_digest_reg; 
+    register<digest_t>(TOR_NUM) srcindex_digest_reg;
 
     /* At each hop, saves the next hop to reach each destination ToR */
-    register<bit<16>>(TOR_NUM) dstindex_nhop_reg; 
+    register<bit<16>>(TOR_NUM) dstindex_nhop_reg;
 
     /* At each hop saves the next hop for each flow */
-    register<bit<16>>(65536) flow_port_reg; 
+    register<bit<16>>(65536) flow_port_reg;
 
     /* This action will drop packets */
     action drop() {
-        mark_to_drop();
+        mark_to_drop(standard_metadata);
     }
 
     action nop() {
@@ -175,7 +175,7 @@ control MyIngress(inout headers hdr,
         hdr.ethernet.srcAddr = hdr.ethernet.dstAddr;
         hdr.ethernet.dstAddr = dstAddr;
     }
-    
+
     /* This action just applies source routing */
     action srcRoute_nhop() {
         standard_metadata.egress_spec = (bit<9>)hdr.srcRoutes[0].port;
@@ -193,13 +193,13 @@ control MyIngress(inout headers hdr,
      * where we receive hula packet
      */
     action hula_set_nhop(bit<32> index) {
-        dstindex_nhop_reg.write(index, (bit<16>)standard_metadata.ingress_port); 
+        dstindex_nhop_reg.write(index, (bit<16>)standard_metadata.ingress_port);
     }
 
     /* Read next hop that is saved in hula_set_nhop action for data packets */
     action hula_get_nhop(bit<32> index){
        bit<16> tmp;
-       dstindex_nhop_reg.read(tmp, index); 
+       dstindex_nhop_reg.read(tmp, index);
        standard_metadata.egress_spec = (bit<9>)tmp;
     }
 
@@ -249,8 +249,8 @@ control MyIngress(inout headers hdr,
         size = TOR_NUM;
     }
 
-    /* On reverse path: 
-     * - if source ToR (srcAddr = this switch) drop hula packet 
+    /* On reverse path:
+     * - if source ToR (srcAddr = this switch) drop hula packet
      * - otherwise, just forward in the reverse path based on source routing
      */
     table hula_src {
@@ -310,7 +310,7 @@ control MyIngress(inout headers hdr,
                             return_hula_to_src();
                         }else{
 
-                            /* update the best path even if it has gone worse 
+                            /* update the best path even if it has gone worse
                              * so that other paths can replace it later
                              */
                             digest_t old_digest;
@@ -320,7 +320,7 @@ control MyIngress(inout headers hdr,
                             }
 
                             drop();
-                        } 
+                        }
                     }
                 }
             }else {
@@ -334,10 +334,10 @@ control MyIngress(inout headers hdr,
         }else if (hdr.ipv4.isValid()){
             bit<16> flow_hash;
             hash(
-                flow_hash, 
-                HashAlgorithm.crc16, 
-                16w0, 
-                { hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, hdr.udp.srcPort}, 
+                flow_hash,
+                HashAlgorithm.crc16,
+                16w0,
+                { hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, hdr.udp.srcPort},
                 32w65536);
 
             /* TODO:
@@ -345,11 +345,23 @@ control MyIngress(inout headers hdr,
              * - Read nexthop port from flow_port_reg for the flow
              *   using flow_hash into a temporary variable
              * - if port==0,
-             *  - apply hula_nhop table to get next hop for destination ToR 
+             *  - apply hula_nhop table to get next hop for destination ToR
              *  - write the next hop into the flow_port_reg register indexed by flow_hash
              * - else: write port into standard_metadata.egress_spec
              */
-            drop();
+            //drop();
+            /* look into hula tables */
+            bit<16> port;
+            flow_port_reg.read(port, (bit<32>)flow_hash);
+
+            if (port == 0){
+                /* if it is a new flow check hula paths */
+                hula_nhop.apply();
+                flow_port_reg.write((bit<32>)flow_hash, (bit<16>)standard_metadata.egress_spec);
+            }else{
+                /* old flows still use old path to avoid oscilation and packet reordering */
+                standard_metadata.egress_spec = (bit<9>)port;
+            }
 
             /* set the right dmac so that ping and iperf work */
             dmac.apply();
@@ -373,10 +385,19 @@ control MyEgress(inout headers hdr,
     apply {
         /* TODO:
          * if hula header is valid and this is forward path (hdr.hula.dir==0)
-         * check whether the qdepth in hula is smaller than 
+         * check whether the qdepth in hula is smaller than
          * (qdepth_t)standard_metadata.deq_qdepth
          * if so, then update hdr.hula.qdepth
          */
+         if (hdr.hula.isValid() && hdr.hula.dir == 0){
+
+            /* pick max qdepth in hula forward path */
+            if (hdr.hula.qdepth < (qdepth_t)standard_metadata.deq_qdepth){
+
+                /* update queue length */
+                hdr.hula.qdepth = (qdepth_t)standard_metadata.deq_qdepth;
+            }
+        }
     }
 }
 
