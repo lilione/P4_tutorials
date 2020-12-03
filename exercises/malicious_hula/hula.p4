@@ -130,7 +130,7 @@ parser MyParser(packet_in packet,
 ************   C H E C K S U M    V E R I F I C A T I O N   *************
 *************************************************************************/
 
-control MyVerifyChecksum(in headers hdr, inout metadata meta) {
+control MyVerifyChecksum(inout headers hdr, inout metadata meta) {
     apply {  }
 }
 
@@ -163,7 +163,7 @@ control MyIngress(inout headers hdr,
 
     /* This action will drop packets */
     action drop() {
-        mark_to_drop();
+        mark_to_drop(standard_metadata);
     }
 
     action nop() {
