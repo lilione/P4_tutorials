@@ -19,7 +19,7 @@
       },
       "action_name": "MyIngress.hula_dst",
       "action_params": {
-        "index": 0
+        "index": "0"
       }
     },
     {
@@ -30,7 +30,7 @@
       },
       "action_name": "MyIngress.hula_dst",
       "action_params": {
-        "index": 1
+        "index": "1"
       }
     },
     {
@@ -41,7 +41,7 @@
       },
       "action_name": "MyIngress.hula_dst",
       "action_params": {
-        "index": 2
+        "index": "2"
       }
     },
     {
