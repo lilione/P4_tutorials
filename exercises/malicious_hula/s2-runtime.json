@@ -1,5 +1,122 @@
 {
   "target": "bmv2",
   "p4info": "build/hula.p4.p4info.txt",
-  "bmv2_json": "build/hula.json"
+  "bmv2_json": "build/hula.json",
+  "commands": ["register_write dstindex_nhop_reg 1 1",
+              "register_write srcindex_qdepth_reg 0 256",
+              "register_write srcindex_qdepth_reg 1 256",
+              "register_write srcindex_qdepth_reg 2 256"],
+  "table_entries": [
+    {
+      "table": "MyIngress.hula_src",
+      "match": {
+        "hdr.ipv4.srcAddr": "10.0.2.0"
+      },
+      "action_name": "MyIngress.drop",
+      "action_params": { }
+    },
+    {
+      "table": "MyIngress.hula_fwd",
+      "match": {
+        "hdr.ipv4.dstAddr": "10.0.2.0",
+        "hdr.ipv4.srcAddr": "10.0.1.0"
+      },
+      "action_name": "MyIngress.hula_dst",
+      "action_params": {
+        "index": 0
+      }
+    },
+    {
+      "table": "MyIngress.hula_fwd",
+      "match": {
+        "hdr.ipv4.dstAddr": "10.0.2.0",
+        "hdr.ipv4.srcAddr": "10.0.2.0"
+      },
+      "action_name": "MyIngress.hula_dst",
+      "action_params": {
+        "index": 1
+      }
+    },
+    {
+      "table": "MyIngress.hula_fwd",
+      "match": {
+        "hdr.ipv4.dstAddr": "10.0.2.0",
+        "hdr.ipv4.srcAddr": "10.0.3.0"
+      },
+      "action_name": "MyIngress.hula_dst",
+      "action_params": {
+        "index": 2
+      }
+    },
+    {
+      "table": "MyIngress.dmac",
+      "match": {
+        "standard_metadata.egress_spec": 1
+      },
+      "action_name": "MyIngress.set_dmac",
+      "action_params": {
+        "dstAddr": "00:00:00:00:02:02"
+      }
+    },
+    {
+      "table": "MyIngress.hula_bwd",
+      "match": {
+        "hdr.ipv4.dstAddr": ["10.0.1.0", 24]
+      },
+      "action_name": "MyIngress.hula_set_nhop",
+      "action_params": {
+        "index": 0
+      }
+    },
+    {
+      "table": "MyIngress.hula_bwd",
+      "match": {
+        "hdr.ipv4.dstAddr": ["10.0.2.0", 24]
+      },
+      "action_name": "MyIngress.hula_set_nhop",
+      "action_params": {
+        "index": 1
+      }
+    },
+    {
+      "table": "MyIngress.hula_bwd",
+      "match": {
+        "hdr.ipv4.dstAddr": ["10.0.3.0", 24]
+      },
+      "action_name": "MyIngress.hula_set_nhop",
+      "action_params": {
+        "index": 2
+      }
+    },
+    {
+      "table": "MyIngress.hula_nhop",
+      "match": {
+        "hdr.ipv4.dstAddr": ["10.0.1.0", 24]
+      },
+      "action_name": "MyIngress.hula_get_nhop",
+      "action_params": {
+        "index": 0
+      }
+    },
+    {
+      "table": "MyIngress.hula_nhop",
+      "match": {
+        "hdr.ipv4.dstAddr": ["10.0.2.0", 24]
+      },
+      "action_name": "MyIngress.hula_get_nhop",
+      "action_params": {
+        "index": 1
+      }
+    },
+    {
+      "table": "MyIngress.hula_nhop",
+      "match": {
+        "hdr.ipv4.dstAddr": ["10.0.3.0", 24]
+      },
+      "action_name": "MyIngress.hula_get_nhop",
+      "action_params": {
+        "index": 2
+      }
+    }
+  ]
 }
