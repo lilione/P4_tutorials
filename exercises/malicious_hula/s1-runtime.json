@@ -8,7 +8,8 @@
       "match": {
         "hdr.ipv4.srcAddr": "10.0.1.0"
       },
-      "action_name": "MyIngress.drop"
+      "action_name": "MyIngress.drop",
+      "action_params": { }
     },
     {
       "table": "MyIngress.hula_fwd",
