@@ -6,7 +6,7 @@
     {
       "table": "MyIngress.hula_src",
       "match": {
-        "hdr.ipv4.srcAddr": ["10.0.1.0", 32]
+        "hdr.ipv4.srcAddr": "10.0.1.0"
       },
       "action_name": "MyIngress.drop",
       "action_params": { }
@@ -14,40 +14,40 @@
     {
       "table": "MyIngress.hula_fwd",
       "match": {
-        "hdr.ipv4.dstAddr": ["10.0.1.0", 32],
-        "hdr.ipv4.srcAddr": ["10.0.1.0", 32]
+        "hdr.ipv4.dstAddr": "10.0.1.0",
+        "hdr.ipv4.srcAddr": "10.0.1.0"
       },
       "action_name": "MyIngress.hula_dst",
       "action_params": {
-        "index": "0"
+        "index": 0
       }
     },
     {
       "table": "MyIngress.hula_fwd",
       "match": {
-        "hdr.ipv4.dstAddr": ["10.0.1.0", 32],
-        "hdr.ipv4.srcAddr": ["10.0.2.0", 32]
+        "hdr.ipv4.dstAddr": "10.0.1.0",
+        "hdr.ipv4.srcAddr": "10.0.2.0"
       },
       "action_name": "MyIngress.hula_dst",
       "action_params": {
-        "index": "1"
+        "index": 1
       }
     },
     {
       "table": "MyIngress.hula_fwd",
       "match": {
-        "hdr.ipv4.dstAddr": ["10.0.1.0", 32],
-        "hdr.ipv4.srcAddr": ["10.0.3.0", 32]
+        "hdr.ipv4.dstAddr": "10.0.1.0",
+        "hdr.ipv4.srcAddr": "10.0.3.0"
       },
       "action_name": "MyIngress.hula_dst",
       "action_params": {
-        "index": "2"
+        "index": 2
       }
     },
     {
       "table": "MyIngress.dmac",
       "match": {
-        "standard_metadata.egress_spec": "1"
+        "standard_metadata.egress_spec": 1
       },
       "action_name": "MyIngress.set_dmac",
       "action_params": {
