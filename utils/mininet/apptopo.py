@@ -14,8 +14,21 @@ class AppTopo(Topo):
         self._host_links = {}
         self._sw_links = dict([(sw, {}) for sw in sw_names])
 
-        for sw_name in sw_names:
-            self.addSwitch(sw_name, log_file="%s/%s.log" %(log_dir, sw_name))
+        for sw, params in manifest['targes']['multiswitch']['swithces']:
+            if "program" in params:
+                switchClass = configureP4Switch(
+                        sw_path=bmv2_exe,
+                        json_path=params["program"],
+                        log_console=True,
+                        pcap_dump=pcap_dir)
+            else:
+                # add default switch
+                switchClass = None
+            self.addSwitch(sw, log_file="%s/%s.log" %(log_dir, sw), cls=switchClass)
+
+
+        # for sw_name in sw_names:
+        #     self.addSwitch(sw_name, log_file="%s/%s.log" %(log_dir, sw_name))
 
         for host_name in host_names:
             host_num = int(host_name[1:])
