@@ -305,6 +305,7 @@ class ExerciseRunner:
             if 'commands' in sw_dict:
                 sw = self.net.get(sw_name)
                 for cmd in sw_dict['commands']:
+                    print(cmd)
                     sw.cmd(cmd)
 
     def program_hosts(self):
