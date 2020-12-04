@@ -10,7 +10,7 @@
     {
       "table": "MyIngress.hula_src",
       "match": {
-        "hdr.ipv4.srcAddr": "10.0.1.0"
+        "hdr.ipv4.srcAddr": "10.0.3.0"
       },
       "action_name": "MyIngress.drop",
       "action_params": { }
