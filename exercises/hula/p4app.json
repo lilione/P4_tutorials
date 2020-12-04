@@ -1,5 +1,5 @@
 {
-    "program": "drop.p4",
+    "program": "constant_hula.p4",
     "language": "p4-16",
     "targets": {
       "multiswitch": {
