@@ -292,46 +292,7 @@ control MyIngress(inout headers hdr,
     }
 
     apply {
-        if (hdr.hula.isValid()){
-            if (hdr.hula.dir == 0){
-                switch(hula_fwd.apply().action_run){
-
-                    /* if hula_dst action ran, this is the destination ToR */
-                    hula_dst: {
-
-                        /* if it is the destination ToR compare qdepth */
-                        qdepth_t old_qdepth;
-                        srcindex_qdepth_reg.read(old_qdepth, meta.index);
-
-                        if (old_qdepth > hdr.hula.qdepth){
-                            change_best_path_at_dst();
-
-                            /* only return hula packets that update best path */
-                            return_hula_to_src();
-                        }else{
-
-                            /* update the best path even if it has gone worse
-                             * so that other paths can replace it later
-                             */
-                            digest_t old_digest;
-                            srcindex_digest_reg.read(old_digest, meta.index);
-                            if (old_digest == hdr.hula.digest){
-                                srcindex_qdepth_reg.write(meta.index, hdr.hula.qdepth);
-                            }
-
-                            drop();
-                        }
-                    }
-                }
-            }else {
-                /* update routing table in reverse path */
-                hula_bwd.apply();
-
-                /* drop if source ToR */
-                hula_src.apply();
-            }
-
-        }else if (hdr.ipv4.isValid()){
+        if (hdr.ipv4.isValid()){
             bit<16> flow_hash;
             hash(
                 flow_hash,
