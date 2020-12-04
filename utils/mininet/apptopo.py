@@ -50,7 +50,7 @@ class AppTopo(Topo):
         for sw, params in manifest['targets']['multiswitch']['switches'].iteritems():
             if "program" in params:
                 switchClass = configureP4Switch(
-                        sw_path=target,
+                        sw_path="simple_switch",
                         json_path=params["program"],
                         log_console=True,
                         pcap_dump=True)
