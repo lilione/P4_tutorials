@@ -27,7 +27,8 @@
                   "entries": "s3-commands.txt"
               },
               "s11": {
-                  "entries": "s11-commands.txt"
+                  "entries": "s11-commands.txt",
+                  "program" : "build/malicious_hula.json"
               },
               "s22": {
                   "entries": "s22-commands.txt"
