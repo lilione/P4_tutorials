@@ -132,8 +132,8 @@ def main():
     bmv2_log = args.bmv2_log or ('bmv2_log' in conf and conf['bmv2_log'])
     pcap_dump = args.pcap_dump or ('pcap_dump' in conf and conf['pcap_dump'])
 
-    topo = AppTopo(links, latencies, manifest=manifest, target=args.target,
-                  log_dir=args.log_dir, bws=bws)
+    topo = AppTopo(links, latencies, manifest=manifest, target=args.behavioral_exe,
+                  log_dir=args.log_dir, bws=bws, )
     switchClass = configureP4Switch(
             sw_path=args.behavioral_exe,
             json_path=args.json,

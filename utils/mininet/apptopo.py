@@ -49,10 +49,10 @@ class AppTopo(Topo):
         for sw, params in manifest['targets']['multiswitch']['switches'].iteritems():
             if "program" in params:
                 switchClass = configureP4Switch(
-                        sw_path=bmv2_exe,
+                        sw_path=target,
                         json_path=params["program"],
                         log_console=True,
-                        pcap_dump=pcap_dir)
+                        pcap_dump=True)
             else:
                 # add default switch
                 switchClass = None
