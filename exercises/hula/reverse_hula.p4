@@ -392,7 +392,7 @@ control MyEgress(inout headers hdr,
          if (hdr.hula.isValid() && hdr.hula.dir == 0){
 
             /* pick max qdepth in hula forward path */
-            if (hdr.hula.qdepth < (qdepth_t)standard_metadata.deq_qdepth){
+            if (hdr.hula.qdepth > (qdepth_t)standard_metadata.deq_qdepth){
 
                 /* update queue length */
                 hdr.hula.qdepth = (qdepth_t)standard_metadata.deq_qdepth;
