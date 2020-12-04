@@ -298,15 +298,15 @@ class ExerciseRunner:
             provided for the switches.
         """
         for sw_name, sw_dict in self.switches.iteritems():
-            if 'cli_input' in sw_dict:
-                self.program_switch_cli(sw_name, sw_dict)
-            if 'runtime_json' in sw_dict:
-                self.program_switch_p4runtime(sw_name, sw_dict)
             if 'commands' in sw_dict:
                 sw = self.net.get(sw_name)
                 for cmd in sw_dict['commands']:
                     print(cmd)
                     sw.cmd(cmd)
+            if 'cli_input' in sw_dict:
+                self.program_switch_cli(sw_name, sw_dict)
+            if 'runtime_json' in sw_dict:
+                self.program_switch_p4runtime(sw_name, sw_dict)
 
     def program_hosts(self):
         """ Execute any commands provided in the topology.json file on each Mininet host
