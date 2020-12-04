@@ -19,7 +19,7 @@ def configureP4Switch(**switch_args):
         return ConfiguredP4RuntimeSwitch
     else:
         class ConfiguredP4Switch(P4Switch):
-            next_thrift_port = 9090
+            next_thrift_port = 9100
             def __init__(self, *opts, **kwargs):
                 global next_thrift_port
                 kwargs.update(switch_args)

@@ -1,5 +1,5 @@
 {
-    "program": "hula.p4",
+    "program": "malicious_hula.p4",
     "language": "p4-16",
     "targets": {
       "multiswitch": {
@@ -28,7 +28,7 @@
               },
               "s11": {
                   "entries": "s11-commands.txt",
-                  "program" : "build/malicious_hula.json"
+                  "program" : "hula.p4.json"
               },
               "s22": {
                   "entries": "s22-commands.txt"
