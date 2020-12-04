@@ -1,4 +1,5 @@
 from mininet.topo import Topo
+from p4_mininet import P4Switch
 
 def configureP4Switch(**switch_args):
     """ Helper class that is called by mininet to initialize
