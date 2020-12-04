@@ -1,37 +1,5 @@
 from mininet.topo import Topo
-from p4_mininet import P4Switch
-
-def configureP4Switch(**switch_args):
-    """ Helper class that is called by mininet to initialize
-        the virtual P4 switches. The purpose is to ensure each
-        switch's thrift server is using a unique port.
-    """
-    if "sw_path" in switch_args and 'grpc' in switch_args['sw_path']:
-        # If grpc appears in the BMv2 switch target, we assume will start P4Runtime
-        class ConfiguredP4RuntimeSwitch(P4RuntimeSwitch):
-            def __init__(self, *opts, **kwargs):
-                kwargs.update(switch_args)
-                P4RuntimeSwitch.__init__(self, *opts, **kwargs)
-
-            def describe(self):
-                print "%s -> gRPC port: %d" % (self.name, self.grpc_port)
-
-        return ConfiguredP4RuntimeSwitch
-    else:
-        class ConfiguredP4Switch(P4Switch):
-            next_thrift_port = 9100
-            def __init__(self, *opts, **kwargs):
-                global next_thrift_port
-                kwargs.update(switch_args)
-                kwargs['thrift_port'] = ConfiguredP4Switch.next_thrift_port
-                ConfiguredP4Switch.next_thrift_port += 1
-                P4Switch.__init__(self, *opts, **kwargs)
-
-            def describe(self):
-                print "%s -> Thrift port: %d" % (self.name, self.thrift_port)
-
-        return ConfiguredP4Switch
-
+from multi_switch_mininet import configureP4Switch
 
 class AppTopo(Topo):
 
