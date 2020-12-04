@@ -30,11 +30,11 @@
                   "program" : "hula.p4.json"
               },
               "s11": {
-                  "entries": "s11-commands.txt",
-                  "program" : "hula.p4.json"
+                  "entries": "s11-commands.txt"
               },
               "s22": {
-                  "entries": "s22-commands.txt"
+                  "entries": "s22-commands.txt",
+                  "program" : "hula.p4.json"
               }
 
           }

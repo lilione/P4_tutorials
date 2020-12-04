@@ -1,10 +1,10 @@
 from mininet.topo import Topo
+from p4_mininet import P4Switch
 
-next_thrift_port = args.thrift_port
+next_thrift_port = 9100
 
 def configureP4Switch(**switch_args):
     class ConfiguredP4Switch(P4Switch):
-        next_thrift_port = 9100
         def __init__(self, *opts, **kwargs):
             global next_thrift_port
             kwargs.update(switch_args)
