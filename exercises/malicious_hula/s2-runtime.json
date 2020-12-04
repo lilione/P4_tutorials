@@ -2,10 +2,6 @@
   "target": "bmv2",
   "p4info": "build/hula.p4.p4info.txt",
   "bmv2_json": "build/hula.json",
-  "commands": ["register_write dstindex_nhop_reg 1 1",
-              "register_write srcindex_qdepth_reg 0 256",
-              "register_write srcindex_qdepth_reg 1 256",
-              "register_write srcindex_qdepth_reg 2 256"],
   "table_entries": [
     {
       "table": "MyIngress.hula_src",
