@@ -14,7 +14,7 @@ class AppTopo(Topo):
         self._host_links = {}
         self._sw_links = dict([(sw, {}) for sw in sw_names])
 
-        for sw, params in manifest['targets']['multiswitch']['switches']:
+        for sw, params in manifest['targets']['multiswitch']['switches'].iteritems():
             if "program" in params:
                 switchClass = configureP4Switch(
                         sw_path=bmv2_exe,
